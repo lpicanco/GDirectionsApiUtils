@@ -181,6 +181,25 @@ public class DirectionsJSONParser {
 						Log.v(tag,
 								"routes[" + i + "]:legs[" + j + "]:Step[" + k + "] contains Points found : "
 										+ list.size());
+						
+						/// CUSTOM CODE //////
+						
+						if (currentPath.getTravelMode().equalsIgnoreCase("transit")) {
+							JSONObject tDetails = (JSONObject)jStep.getJSONObject("transit_details");
+							JSONObject line = (JSONObject)tDetails.getJSONObject("line");
+
+							currentPath.setLineNumber(line.getString("short_name"));
+							currentPath.setLine(line.getString("name"));
+						}
+						
+						String lat = ((JSONObject)jStep.get("start_location")).getString("lat");
+						String lon = ((JSONObject)jStep.get("start_location")).getString("lng");
+						
+						currentPath.setStartLocation(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)));
+						
+						/// END CUSTOM CODE //////
+						
+						
 						// Add it to the list of Path of the Direction
 						paths.add(currentPath);
 					}

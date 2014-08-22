@@ -31,6 +31,8 @@ package com.android2ee.formation.librairies.google.map.utils.direction.model;
 
 import java.util.List;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
@@ -61,6 +63,12 @@ public class GDPath {
 	 * The Html text associated with the path
 	 */
 	String mHtmlText;
+	
+	private String line;
+	
+	private String lineNumber;	
+	
+	private LatLng startLocation;
 
 	/**
 	 * @param path The list of GDPoint that makes the path
@@ -166,6 +174,30 @@ public class GDPath {
 			strB.append(",");
 		}
 		return strB.toString();
+	}
+
+	public String getLine() {
+		return line;
+	}
+
+	public void setLine(String line) {
+		this.line = line;
+	}
+
+	public String getLineNumber() {
+		return lineNumber;
+	}
+
+	public void setLineNumber(String lineNumber) {
+		this.lineNumber = lineNumber;
+	}
+
+	public LatLng getStartLocation() {
+		return startLocation;
+	}
+
+	public void setStartLocation(LatLng startLocation) {
+		this.startLocation = startLocation;
 	}
 
 }

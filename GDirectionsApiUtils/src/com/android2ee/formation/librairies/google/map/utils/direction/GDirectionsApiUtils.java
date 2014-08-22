@@ -159,10 +159,19 @@ public class GDirectionsApiUtils {
 	 * @param mode
 	 *            The Mode (see constant of this)
 	 */
+	/*
 	public static void getDirection(DCACallBack callback, LatLng start, LatLng end, String mode) {
 		GoogleDirectionAsyncRestCall async = new GoogleDirectionAsyncRestCall(callback, mode);
 		async.execute(start, end);
-	}
+	}*/
+	
+	public static void getDirection(DCACallBack callback, String start,
+			String end, String mode) {
+		GoogleDirectionAsyncRestCall async = new GoogleDirectionAsyncRestCall(
+				callback, mode);
+		
+		async.execute(start, end);
+	}	
 
 	/******************************************************************************************/
 	/** Private Method : The big dark gas factory **************************************************************************/
@@ -176,7 +185,7 @@ public class GDirectionsApiUtils {
 	 *        Then build the GDirection object
 	 *        Then post it to the DCACallBack in the UI Thread
 	 */
-	public static final class GoogleDirectionAsyncRestCall extends AsyncTask<LatLng, String, List<GDirection>> {
+	public static final class GoogleDirectionAsyncRestCall extends AsyncTask<String, String, List<GDirection>> {
 		/**
 		 * The direction modes (Driving,walking, @see constant of GDirectionsApiUtils)
 		 */
@@ -204,9 +213,11 @@ public class GDirectionsApiUtils {
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
 		@Override
-		protected List<GDirection> doInBackground(LatLng... arg0) {
+		protected List<GDirection> doInBackground(String... arg0) {
 			// Do the rest http call
-			String json = getJSONDirection(arg0[0], arg0[1], mDirectionMode);
+			long departureTime = System.currentTimeMillis() / 1000;
+			
+			String json = getJSONDirection(arg0[0], arg0[1], mDirectionMode, departureTime);
 			// Parse the element and return it
 			return parseJsonGDir(json);
 		}
@@ -236,10 +247,15 @@ public class GDirectionsApiUtils {
 	 *            The mode (walking,driving..)
 	 * @return The json returned by the webServer
 	 */
-	private static String getJSONDirection(LatLng start, LatLng end, String mode) {
-		String url = "http://maps.googleapis.com/maps/api/directions/json?" + "origin=" + start.latitude + ","
-				+ start.longitude + "&destination=" + end.latitude + "," + end.longitude
-				+ "&sensor=false&units=metric&mode=" + mode;
+	private static String getJSONDirection(String start, String end, String mode, long departureTime) {
+		String url = "http://maps.googleapis.com/maps/api/directions/json?" + "origin=" + start
+				+ "&destination=" + end
+				+ "&sensor=false&units=metric&mode=" + mode
+				+ "&departure_time=" + departureTime;
+		
+		// Sanitiza a URL.
+		url = url.replaceAll(" ", "%20");
+		
 		String responseBody = null;
 		// The HTTP get method send to the URL
 		HttpGet getMethod = new HttpGet(url);
